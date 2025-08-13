@@ -23,12 +23,12 @@ public class DailyStats {
     private LocalDate date;
 
     @Column(nullable = false)
-    private long clickCount;
+    private Long clickCount;
 
     @Column(nullable = false)
-    private long uniqueCount;
+    private Long uniqueCount;
 
-    public DailyStats(String shortKey, LocalDate date, long clickCount, long uniqueCount) {
+    public DailyStats(String shortKey, LocalDate date, Long clickCount, Long uniqueCount) {
         this.shortKey = shortKey;
         this.date = date;
         this.clickCount = clickCount;
