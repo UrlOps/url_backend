@@ -6,12 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UrlMapping {
+public class UrlMapping extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,32 +23,16 @@ public class UrlMapping {
     private String originalUrl;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
     private LocalDateTime expireAt;
 
-    public UrlMapping(String shortKey, String originalUrl, LocalDateTime createdAt, LocalDateTime expireAt) {
+    public static UrlMapping createUrlMapping(String originalUrl) {
+        UrlMapping urlMapping = new UrlMapping();
+        urlMapping.originalUrl = originalUrl;
+        urlMapping.expireAt = LocalDateTime.now().plusYears(1); // 기본 만료 기간 1년
+        return urlMapping;
+    }
+
+    public void updateShortKey(String shortKey) {
         this.shortKey = shortKey;
-        this.originalUrl = originalUrl;
-        this.createdAt = createdAt;
-        this.expireAt = expireAt;
-    }
-
-    public static UrlMapping createUrlMapping(String originalUrl, String customKey) {
-        String shortKey = (customKey != null && !customKey.isEmpty())
-                ? customKey
-                : generateRandomKey();
-        
-        return new UrlMapping(
-                shortKey,
-                originalUrl,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(30)
-        );
-    }
-
-    private static String generateRandomKey() {
-        return UUID.randomUUID().toString().substring(0, 8);
     }
 }
