@@ -1,0 +1,45 @@
+package be.url_backend.util;
+
+public class Base62Utils {
+
+    private static final char[] BASE62_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final int BASE = 62;
+
+    /**
+     * long 타입의 숫자를 Base62 문자열로 인코딩합니다.
+     * @param number 인코딩할 숫자 (e.g., 데이터베이스 ID)
+     * @return Base62로 인코딩된 문자열
+     */
+    public static String encode(long number) {
+        if (number == 0) {
+            return String.valueOf(BASE62_CHARS[0]);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        while (number > 0) {
+            sb.append(BASE62_CHARS[(int) (number % BASE)]);
+            number /= BASE;
+        }
+
+        return sb.reverse().toString();
+    }
+
+    /**
+     * Base62 문자열을 long 타입의 숫자로 디코딩합니다.
+     * @param str 디코딩할 Base62 문자열
+     * @return 디코딩된 숫자
+     */
+    public static long decode(String str) {
+        long result = 0;
+        long power = 1;
+        for (int i = str.length() - 1; i >= 0; i--) {
+            int digit = new String(BASE62_CHARS).indexOf(str.charAt(i));
+            if (digit == -1) {
+                throw new IllegalArgumentException("Invalid Base62 character in string: " + str);
+            }
+            result += digit * power;
+            power *= BASE;
+        }
+        return result;
+    }
+}
