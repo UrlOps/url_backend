@@ -1,13 +1,14 @@
 package be.url_backend.util;
 
 import java.security.SecureRandom;
+import java.util.Random;
 
 public class Base62Utils {
 
-    private static final char[] BASE62_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final char[] BASE62_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
     private static final int BASE = 62;
     private static final int SHORT_KEY_LENGTH = 7;
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final Random RANDOM = new SecureRandom();
 
     /**
      * 지정된 길이의 무작위 Base62 문자열을 생성합니다.
@@ -16,7 +17,7 @@ public class Base62Utils {
     public static String generateShortKey() {
         StringBuilder sb = new StringBuilder(SHORT_KEY_LENGTH);
         for (int i = 0; i < SHORT_KEY_LENGTH; i++) {
-            sb.append(BASE62_CHARS[RANDOM.nextInt(BASE)]);
+            sb.append(BASE62_CHARS[RANDOM.nextInt(BASE62_CHARS.length)]);
         }
         return sb.toString();
     }
