@@ -5,6 +5,8 @@ import be.url_backend.dto.response.AdminResponseDto;
 import be.url_backend.dto.request.AdminSignupRequestDto;
 import be.url_backend.repository.AdminRepository;
 import be.url_backend.repository.ClickLogRepository;
+import be.url_backend.exception.CustomException;
+import be.url_backend.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +20,8 @@ import be.url_backend.dto.response.DailyStatsDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class AdminService implements UserDetailsService {
     @Transactional
     public AdminResponseDto signup(AdminSignupRequestDto requestDto) {
         if (adminRepository.findByUsername(requestDto.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+            throw new CustomException(ErrorCode.USER_ALREADY_EXISTS);
         }
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         Admin admin = new Admin(requestDto.getUsername(), encodedPassword);
@@ -44,13 +43,12 @@ public class AdminService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Admin login(String username, String password) {
+    public void login(String username, String password) {
         Admin admin = adminRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (!passwordEncoder.matches(password, admin.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
-        return admin;
     }
 
     @Transactional(readOnly = true)
@@ -60,14 +58,14 @@ public class AdminService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public List<DailyStatsDto> getDailyStats() {
-        List<Object[]> results = clickLogRepository.findDailyClickStats();
-        return results.stream()
-                .map(result -> {
-                    LocalDate date = ((Date) result[0]).toLocalDate();
-                    Long count = (Long) result[1];
-                    return new DailyStatsDto(date, count);
-                })
-                .collect(Collectors.toList());
+//        return clickLogRepository.findDailyClickStats().stream()
+//                .map(row -> new DailyStatsDto(
+//                        (String) row[0],
+//                        (java.sql.Date) row[1],
+//                        (Long) row[2]
+//                ))
+//                .collect(Collectors.toList());
+        return java.util.Collections.emptyList();
     }
 
     @Override
@@ -77,4 +75,4 @@ public class AdminService implements UserDetailsService {
                 .map(admin -> new User(admin.getUsername(), admin.getPassword(), Collections.emptyList()))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
-} 
+}
