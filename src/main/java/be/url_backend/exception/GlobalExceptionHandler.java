@@ -12,9 +12,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleCustomException(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .statuscode(String.valueOf(errorCode.getHttpStatus().value()))
+                .statuscode(String.valueOf(errorCode.getStatus().value()))
                 .msg(errorCode.getMessage())
                 .build();
-        return new ResponseEntity<>(response, errorCode.getHttpStatus());
+        return new ResponseEntity<>(response, errorCode.getStatus());
     }
 } 
