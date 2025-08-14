@@ -22,7 +22,7 @@ public class ClickLogResponseDto {
     public static ClickLogResponseDto from(ClickLog clickLog) {
         return ClickLogResponseDto.builder()
                 .id(clickLog.getId())
-                .shortKey(clickLog.getShortKey())
+                .shortKey(clickLog.getUrlMapping().getShortKey())
                 .clickedAt(clickLog.getClickedAt())
                 .userAgent(clickLog.getUserAgent())
                 .country(clickLog.getCountry())
