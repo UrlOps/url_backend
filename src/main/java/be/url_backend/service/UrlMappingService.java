@@ -36,6 +36,13 @@ public class UrlMappingService {
      */
     @Transactional
     public UrlResponseDto createShortUrl(UrlCreateRequestDto requestDto, String baseUrl) {
+        String originalUrl = requestDto.getOriginalUrl();
+        int shortenedUrlLength = baseUrl.length() + 1 + Base62Utils.SHORT_KEY_LENGTH;
+
+        if (originalUrl.length() <= shortenedUrlLength) {
+            throw new CustomException(ErrorCode.URL_IS_ALREADY_SHORT);
+        }
+
         String shortKey;
         do {
             shortKey = Base62Utils.generateShortKey();

@@ -6,8 +6,8 @@ import java.util.Random;
 public class Base62Utils {
 
     private static final char[] BASE62_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+    public static final int SHORT_KEY_LENGTH = 7;
     private static final int BASE = 62;
-    private static final int SHORT_KEY_LENGTH = 7;
     private static final Random RANDOM = new SecureRandom();
 
     /**
