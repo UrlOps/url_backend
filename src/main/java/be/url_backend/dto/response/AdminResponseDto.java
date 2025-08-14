@@ -1,13 +1,16 @@
 package be.url_backend.dto.response;
 
 import be.url_backend.domain.Admin;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AdminResponseDto {
     private final Long id;
     private final String username;

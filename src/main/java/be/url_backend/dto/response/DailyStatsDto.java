@@ -1,20 +1,22 @@
 package be.url_backend.dto.response;
 
 import be.url_backend.domain.DailyStats;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DailyStatsDto {
     private LocalDate date;
     private Long count;
+
+    public DailyStatsDto(java.sql.Date date, Long count) {
+        this.date = date.toLocalDate();
+        this.count = count;
+    }
 
     public static DailyStatsDto from(DailyStats dailyStats) {
         return DailyStatsDto.builder()
@@ -22,4 +24,4 @@ public class DailyStatsDto {
                 .count(dailyStats.getClickCount())
                 .build();
     }
-} 
+}
