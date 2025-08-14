@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,22 +19,15 @@ public class ClickLog extends BaseTimeEntity {
     private UrlMapping urlMapping;
 
     @Column(nullable = false)
-    private LocalDateTime clickedAt;
-
-    @Column(length = 512)
     private String userAgent;
-    
-    @Column(length = 100)
-    private String country;
 
-    @Column
-    private String referer;
+    @Column(nullable = false)
+    private String ipAddress;
 
-    public static ClickLog createClickLog(UrlMapping urlMapping, String userAgent, String referer) {
-        ClickLog clickLog = new ClickLog();
-        clickLog.urlMapping = urlMapping;
-        clickLog.userAgent = userAgent;
-        clickLog.referer = referer;
-        return clickLog;
+
+    public ClickLog(UrlMapping urlMapping, String userAgent, String ipAddress) {
+        this.urlMapping = urlMapping;
+        this.userAgent = userAgent;
+        this.ipAddress = ipAddress;
     }
 }

@@ -15,17 +15,17 @@ public class ClickLogResponseDto {
 
     private final Long id;
     private final String shortKey;
-    private final LocalDateTime clickedAt;
+    private final LocalDateTime createdAt;
     private final String userAgent;
-    private final String country;
+    private final String ipaddress;
 
     public static ClickLogResponseDto from(ClickLog clickLog) {
         return ClickLogResponseDto.builder()
                 .id(clickLog.getId())
                 .shortKey(clickLog.getUrlMapping().getShortKey())
-                .clickedAt(clickLog.getClickedAt())
+                .createdAt(clickLog.getCreatedAt())
                 .userAgent(clickLog.getUserAgent())
-                .country(clickLog.getCountry())
+                .ipaddress(clickLog.getIpAddress())
                 .build();
     }
 } 
