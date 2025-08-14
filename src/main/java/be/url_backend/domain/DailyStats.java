@@ -24,15 +24,15 @@ public class DailyStats {
     private LocalDate date;
 
     @Column(nullable = false)
-    private Long clickCount;
+    private long clickCount;
 
-    @Column(nullable = false)
-    private Long uniqueCount;
-
-    public DailyStats(UrlMapping urlMapping, LocalDate date, Long clickCount, Long uniqueCount) {
+    public DailyStats(UrlMapping urlMapping, LocalDate date) {
         this.urlMapping = urlMapping;
         this.date = date;
-        this.clickCount = clickCount;
-        this.uniqueCount = uniqueCount;
+        this.clickCount = 0;
+    }
+
+    public void incrementClickCount() {
+        this.clickCount++;
     }
 }

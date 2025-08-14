@@ -1,14 +1,14 @@
 package be.url_backend.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor
 public class DailyStatsDto {
-    private String shortUrl;
+    private Long id;
     private LocalDate date;
-    private Long count;
+    private long clickCount;
 }
