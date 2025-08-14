@@ -1,10 +1,14 @@
 package be.url_backend.service;
 
+import be.url_backend.domain.ClickLog;
 import be.url_backend.domain.UrlMapping;
 import be.url_backend.dto.request.UrlCreateRequestDto;
 import be.url_backend.dto.response.UrlResponseDto;
+import be.url_backend.repository.ClickLogRepository;
 import be.url_backend.repository.UrlMappingRepository;
 import be.url_backend.util.Base62Utils;
+import be.url_backend.exception.CustomException;
+import be.url_backend.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,50 +17,43 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class UrlMappingService {
 
     private final UrlMappingRepository urlMappingRepository;
+    private final ClickLogRepository clickLogRepository;
 
-    @Transactional
     public UrlResponseDto createShortUrl(UrlCreateRequestDto request, String baseUrl) {
-        UrlMapping urlMapping;
-        if (request.getCustomKey() != null && !request.getCustomKey().isEmpty()) {
-            urlMappingRepository.findByShortKey(request.getCustomKey()).ifPresent(u -> {
-                throw new IllegalArgumentException("커스텀 키가 이미 존재합니다. 다른 키를 사용해주세요.");
-            });
-            urlMapping = UrlMapping.createUrlMapping(request.getOriginalUrl());
-            urlMapping.updateShortKey(request.getCustomKey());
-        } else {
-            urlMapping = UrlMapping.createUrlMapping(request.getOriginalUrl());
-        }
-        
-        UrlMapping savedUrlMapping = urlMappingRepository.save(urlMapping);
+        String shortKey;
+        do {
+            shortKey = Base62Utils.generateShortKey();
+        } while (urlMappingRepository.findByShortKey(shortKey).isPresent());
 
-        if (request.getCustomKey() == null || request.getCustomKey().isEmpty()) {
-            String shortKey = Base62Utils.encode(savedUrlMapping.getId());
-            savedUrlMapping.updateShortKey(shortKey);
-            urlMappingRepository.save(savedUrlMapping);
-        }
+        UrlMapping urlMapping = UrlMapping.createUrlMapping(request.getOriginalUrl());
+        urlMapping.updateShortKey(shortKey);
+        UrlMapping savedUrlMapping = urlMappingRepository.save(urlMapping);
 
         return UrlResponseDto.from(savedUrlMapping, baseUrl);
     }
 
     public UrlResponseDto getOriginalUrl(String shortKey, String baseUrl) {
         UrlMapping urlMapping = urlMappingRepository.findByShortKey(shortKey)
-                .orElseThrow(() -> new IllegalArgumentException("주어진 키에서 URL을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.URL_NOT_FOUND));
+
+        ClickLog clickLog = ClickLog.createClickLog(urlMapping, "user-agent-placeholder", "referer-placeholder");
+        clickLogRepository.save(clickLog);
+
         return UrlResponseDto.from(urlMapping, baseUrl);
     }
 
+    @Transactional(readOnly = true)
     public List<UrlMapping> getAllUrls() {
         return urlMappingRepository.findAll();
     }
 
-    @Transactional
     public void deleteUrl(String shortKey) {
         UrlMapping urlMapping = urlMappingRepository.findByShortKey(shortKey)
-                .orElseThrow(() -> new IllegalArgumentException("주어진 키에서 URL을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.URL_NOT_FOUND));
         urlMappingRepository.delete(urlMapping);
     }
-
 }
