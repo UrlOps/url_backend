@@ -16,8 +16,9 @@ public class DailyStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "short_key", nullable = false)
-    private String shortKey;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "url_mapping_id", nullable = false)
+    private UrlMapping urlMapping;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -28,8 +29,8 @@ public class DailyStats {
     @Column(nullable = false)
     private Long uniqueCount;
 
-    public DailyStats(String shortKey, LocalDate date, Long clickCount, Long uniqueCount) {
-        this.shortKey = shortKey;
+    public DailyStats(UrlMapping urlMapping, LocalDate date, Long clickCount, Long uniqueCount) {
+        this.urlMapping = urlMapping;
         this.date = date;
         this.clickCount = clickCount;
         this.uniqueCount = uniqueCount;

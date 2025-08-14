@@ -10,14 +10,15 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ClickLog {
+public class ClickLog extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "short_key", nullable = false)
-    private String shortKey;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "url_mapping_id", nullable = false)
+    private UrlMapping urlMapping;
 
     @Column(nullable = false)
     private LocalDateTime clickedAt;
@@ -28,10 +29,14 @@ public class ClickLog {
     @Column(length = 100)
     private String country;
 
-    public ClickLog(String shortKey, LocalDateTime clickedAt, String userAgent, String country) {
-        this.shortKey = shortKey;
-        this.clickedAt = clickedAt;
-        this.userAgent = userAgent;
-        this.country = country;
+    @Column
+    private String referer;
+
+    public static ClickLog createClickLog(UrlMapping urlMapping, String userAgent, String referer) {
+        ClickLog clickLog = new ClickLog();
+        clickLog.urlMapping = urlMapping;
+        clickLog.userAgent = userAgent;
+        clickLog.referer = referer;
+        return clickLog;
     }
 }

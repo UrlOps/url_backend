@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,6 +26,12 @@ public class UrlMapping extends BaseTimeEntity {
 
     @Column(nullable = false)
     private LocalDateTime expireAt;
+
+    @OneToMany(mappedBy = "urlMapping", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClickLog> clickLogs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "urlMapping", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DailyStats> dailyStats = new ArrayList<>();
 
     public static UrlMapping createUrlMapping(String originalUrl) {
         UrlMapping urlMapping = new UrlMapping();
