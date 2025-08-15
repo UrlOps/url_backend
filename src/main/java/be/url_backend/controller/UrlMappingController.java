@@ -30,7 +30,8 @@ public class UrlMappingController {
      * @return 생성된 단축 URL 정보
      */
     @PostMapping("/api/urls")
-    public ResponseEntity<ApiResponse<UrlResponseDto>> createShortUrl(@RequestBody UrlCreateRequestDto request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ApiResponse<UrlResponseDto>> createShortUrl(
+            @RequestBody UrlCreateRequestDto request, HttpServletRequest httpServletRequest) {
         UrlResponseDto urlResponseDto = urlMappingService.createShortUrl(request, getBaseUrl(httpServletRequest));
         ApiResponse<UrlResponseDto> response = ApiResponse.<UrlResponseDto>builder()
                 .msg(ResponseText.URL_CREATE_SUCCESS.getMsg())
@@ -67,7 +68,8 @@ public class UrlMappingController {
      * @return 원본 URL 정보
      */
     @GetMapping("/api/urls/{shortKey}")
-    public ResponseEntity<ApiResponse<UrlResponseDto>> getUrlInfo(@PathVariable String shortKey, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ApiResponse<UrlResponseDto>> getUrlInfo(
+            @PathVariable String shortKey, HttpServletRequest httpServletRequest) {
         UrlResponseDto urlResponseDto = urlMappingService.getOriginalUrl(shortKey, getBaseUrl(httpServletRequest));
         ApiResponse<UrlResponseDto> response = ApiResponse.<UrlResponseDto>builder()
                 .msg(ResponseText.URL_INFO_FETCH_SUCCESS.getMsg())
@@ -92,8 +94,17 @@ public class UrlMappingController {
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * 단축 URL을 원본 URL로 리디렉션하고 클릭을 기록합니다.
+     *
+     * @param shortKey 리디렉션할 단축 URL의 shortKey
+     * @param request  HTTP 요청 객체
+     * @return 원본 URL로 리디렉션하는 ResponseEntity
+     * @throws IOException URL 처리 중 입출력 예외 발생 시
+     */
     @GetMapping("/{shortKey}")
-    public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String shortKey, HttpServletRequest request) throws IOException {
+    public ResponseEntity<Void> redirectToOriginalUrl(
+            @PathVariable String shortKey, HttpServletRequest request) throws IOException {
         String originalUrl = urlMappingService.getOriginalUrlAndLogClick(shortKey, request);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(originalUrl))
