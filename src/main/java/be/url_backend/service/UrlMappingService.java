@@ -37,6 +37,11 @@ public class UrlMappingService {
     @Transactional
     public UrlResponseDto createShortUrl(UrlCreateRequestDto requestDto, String baseUrl) {
         String originalUrl = requestDto.getOriginalUrl();
+
+        if (!originalUrl.startsWith("http://") && !originalUrl.startsWith("https://")) {
+            throw new CustomException(ErrorCode.INVALID_URL_FORMAT);
+        }
+        
         int shortenedUrlLength = baseUrl.length() + 1 + Base62Utils.SHORT_KEY_LENGTH;
 
         if (originalUrl.length() <= shortenedUrlLength) {

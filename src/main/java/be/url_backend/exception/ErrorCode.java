@@ -18,7 +18,8 @@ public enum ErrorCode {
 
     // UrlMapping
     URL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 URL을 찾을 수 없습니다."),
-    URL_IS_ALREADY_SHORT(HttpStatus.BAD_REQUEST, "이미 충분히 짧은 URL이므로 단축할 수 없습니다.");
+    URL_IS_ALREADY_SHORT(HttpStatus.BAD_REQUEST, "이미 충분히 짧은 URL이므로 단축할 수 없습니다."),
+    INVALID_URL_FORMAT(HttpStatus.BAD_REQUEST, "올바른 URL 형식이 아닙니다. http:// 또는 https://로 시작하는 URL을 입력해주세요.");
 
     private final HttpStatus status;
     private final String message;
