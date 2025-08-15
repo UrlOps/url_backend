@@ -2,6 +2,7 @@ package be.url_backend.repository;
 
 import be.url_backend.domain.DailyStats;
 import be.url_backend.domain.UrlMapping;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface DailyStatsRepository extends JpaRepository<DailyStats, Long> {
+    @EntityGraph(attributePaths = {"urlMapping"})
     Optional<DailyStats> findByUrlMappingAndDate(UrlMapping urlMapping, LocalDate date);
 } 
