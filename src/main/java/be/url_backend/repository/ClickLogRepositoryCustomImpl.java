@@ -1,6 +1,7 @@
 package be.url_backend.repository;
 
 import be.url_backend.domain.QClickLog;
+import be.url_backend.domain.QUrlMapping;
 import be.url_backend.dto.response.DailyStatsDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -20,6 +21,7 @@ public class ClickLogRepositoryCustomImpl implements ClickLogRepositoryCustom {
     @Override
     public List<DailyStatsDto> findDailyClickStats() {
         QClickLog clickLog = QClickLog.clickLog;
+        QUrlMapping urlMapping = QUrlMapping.urlMapping;
 
         StringTemplate formattedDate = Expressions.stringTemplate(
                 "DATE_FORMAT({0}, {1})",
@@ -28,13 +30,14 @@ public class ClickLogRepositoryCustomImpl implements ClickLogRepositoryCustom {
 
         return queryFactory
                 .select(Projections.constructor(DailyStatsDto.class,
-                        clickLog.urlMapping.id,
+                        urlMapping.id,
                         clickLog.createdAt.as("date"),
                         clickLog.count().as("clickCount")
                 ))
                 .from(clickLog)
-                .groupBy(clickLog.urlMapping.id, formattedDate)
+                .join(clickLog.urlMapping, urlMapping)
+                .groupBy(urlMapping.id, formattedDate)
                 .orderBy(formattedDate.desc())
                 .fetch();
     }
-} 
+}
