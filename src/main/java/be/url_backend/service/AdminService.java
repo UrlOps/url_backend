@@ -25,6 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminService implements UserDetailsService {
 
     private final AdminRepository adminRepository;
@@ -42,7 +43,6 @@ public class AdminService implements UserDetailsService {
         return AdminResponseDto.from(savedAdmin);
     }
 
-    @Transactional(readOnly = true)
     public void login(String username, String password) {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -51,25 +51,15 @@ public class AdminService implements UserDetailsService {
         }
     }
 
-    @Transactional(readOnly = true)
     public Page<ClickLogResponseDto> getAllClickLogs(Pageable pageable) {
         return clickLogRepository.findAll(pageable).map(ClickLogResponseDto::from);
     }
 
-    @Transactional(readOnly = true)
     public List<DailyStatsDto> getDailyStats() {
-//        return clickLogRepository.findDailyClickStats().stream()
-//                .map(row -> new DailyStatsDto(
-//                        (String) row[0],
-//                        (java.sql.Date) row[1],
-//                        (Long) row[2]
-//                ))
-//                .collect(Collectors.toList());
-        return java.util.Collections.emptyList();
+        return clickLogRepository.findDailyClickStats();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return adminRepository.findByUsername(username)
                 .map(admin -> new User(admin.getUsername(), admin.getPassword(), Collections.emptyList()))
