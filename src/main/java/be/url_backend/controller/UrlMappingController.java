@@ -5,15 +5,18 @@ import be.url_backend.domain.UrlMapping;
 import be.url_backend.dto.request.UrlCreateRequestDto;
 import be.url_backend.dto.response.UrlResponseDto;
 import be.url_backend.dto.common.ApiResponse;
+import be.url_backend.dto.response.ClickLogResponseDto;
+import be.url_backend.service.ClickLogService;
 import be.url_backend.service.UrlMappingService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class UrlMappingController {
 
     private final UrlMappingService urlMappingService;
+    private final ClickLogService clickLogService;
 
     /**
      * 단축 URL 생성 API
@@ -95,16 +99,37 @@ public class UrlMappingController {
     }
 
     /**
+     * 복합 인덱스 테스트용 API - 특정 IP의 특정 기간 클릭 로그 조회
+     *
+     * @param ipAddress 조회할 IP 주소
+     * @param startDate 조회 시작일 (YYYY-MM-DD)
+     * @param endDate   조회 종료일 (YYYY-MM-DD)
+     * @return 해당 기간의 클릭 로그 목록
+     */
+    @GetMapping("/api/logs/{ipAddress}")
+    public ResponseEntity<ApiResponse<List<ClickLogResponseDto>>> getLogsByIpForLoadTest(
+            @PathVariable String ipAddress,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        List<ClickLogResponseDto> logs = clickLogService.getClickLogsByIpForPeriod(ipAddress, startDate, endDate);
+        ApiResponse<List<ClickLogResponseDto>> response = ApiResponse.<List<ClickLogResponseDto>>builder()
+                .msg("복합 인덱스 테스트용 로그 조회 성공")
+                .statuscode(String.valueOf(HttpStatus.OK.value()))
+                .data(logs)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * 단축 URL을 원본 URL로 리디렉션하고 클릭을 기록합니다.
      *
      * @param shortKey 리디렉션할 단축 URL의 shortKey
      * @param request  HTTP 요청 객체
      * @return 원본 URL로 리디렉션하는 ResponseEntity
-     * @throws IOException URL 처리 중 입출력 예외 발생 시
      */
     @GetMapping("/{shortKey}")
     public ResponseEntity<Void> redirectToOriginalUrl(
-            @PathVariable String shortKey, HttpServletRequest request) throws IOException {
+            @PathVariable String shortKey, HttpServletRequest request) {
         String originalUrl = urlMappingService.getOriginalUrlAndLogClick(shortKey, request);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(originalUrl))

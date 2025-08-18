@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "click_log", indexes = {
+        @Index(name = "idx_ip_created", columnList = "ipAddress, createdAt"),
+})
 public class ClickLog extends BaseTimeEntity {
 
     @Id
@@ -23,7 +26,6 @@ public class ClickLog extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String ipAddress;
-
 
     public ClickLog(UrlMapping urlMapping, String userAgent, String ipAddress) {
         this.urlMapping = urlMapping;
