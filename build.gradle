@@ -43,6 +43,13 @@ dependencies {
     // 테스트 의존성 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'com.h2database:h2'
+
+    // Spring Cache - Ehcache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.ehcache:ehcache:3.10.8'
+    // JAXB API for Java 11+ (Ehcache compatibility)
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
 }
 
 tasks.named('test') {

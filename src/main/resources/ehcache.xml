@@ -1,0 +1,21 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+
+    <cache alias="url-mapping-cache">
+        <!-- 키와 값의 타입을 지정합니다. -->
+        <key-type>java.lang.String</key-type>
+        <value-type>be.url_backend.domain.UrlMapping</value-type>
+
+        <expiry>
+            <!-- Time to Live: 캐시 항목이 생성된 후 10분 동안 유지됩니다. -->
+            <ttl unit="minutes">10</ttl>
+        </expiry>
+
+        <resources>
+            <!-- 힙 메모리에 최대 10,000개의 항목을 저장합니다. -->
+            <heap unit="entries">10000</heap>
+        </resources>
+    </cache>
+
+</config> 
