@@ -1,14 +1,10 @@
 package be.url_backend.service;
 
-import be.url_backend.domain.ClickLog;
-import be.url_backend.domain.DailyStats;
 import be.url_backend.domain.UrlMapping;
 import be.url_backend.dto.request.UrlCreateRequestDto;
 import be.url_backend.dto.response.UrlResponseDto;
 import be.url_backend.exception.CustomException;
 import be.url_backend.exception.ErrorCode;
-import be.url_backend.repository.ClickLogRepository;
-import be.url_backend.repository.DailyStatsRepository;
 import be.url_backend.repository.UrlMappingRepository;
 import be.url_backend.util.Base62Utils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,8 +19,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UrlMappingService {
     private final UrlMappingRepository urlMappingRepository;
-    private final ClickLogRepository clickLogRepository;
-    private final DailyStatsRepository dailyStatsRepository;
+    private final ClickLogService clickLogService;
 
     /**
      * 단축 URL 생성
@@ -65,24 +59,9 @@ public class UrlMappingService {
         UrlMapping urlMapping = urlMappingRepository.findByShortKey(shortKey)
                 .orElseThrow(() -> new CustomException(ErrorCode.URL_NOT_FOUND));
 
-        String userAgent = request.getHeader("User-Agent");
-        String ipAddress = request.getRemoteAddr();
-
-        ClickLog clickLog = new ClickLog(urlMapping, userAgent, ipAddress);
-        clickLogRepository.save(clickLog);
-
-        updateDailyStats(urlMapping);
+        clickLogService.logClickAndupdateDailyStats(urlMapping, request.getHeader("User-Agent"), request.getRemoteAddr());
 
         return urlMapping.getOriginalUrl();
-    }
-
-    private void updateDailyStats(UrlMapping urlMapping) {
-        LocalDate today = LocalDate.now();
-        DailyStats dailyStats = dailyStatsRepository.findByUrlMappingAndDate(urlMapping, today)
-                .orElse(new DailyStats(urlMapping, today));
-
-        dailyStats.incrementClickCount();
-        dailyStatsRepository.save(dailyStats);
     }
 
     /**
