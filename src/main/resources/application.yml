@@ -15,12 +15,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate:
         default_batch_fetch_size: 500
         format_sql: true
     show-sql: true
+    open-in-view: false
 
 jwt:
   secret: ${JWT_SECRET_KEY}
