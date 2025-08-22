@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,8 +68,11 @@ public class UrlMappingService {
     /**
      * 모든 URL 조회
      */
-    public List<UrlMapping> getAllUrls() {
-        return urlMappingRepository.findAll();
+    public List<UrlResponseDto> getAllUrls(String baseUrl) {
+        List<UrlMapping> urlMappings = urlMappingRepository.findAll();
+        return urlMappings.stream()
+                .map(urlMapping -> UrlResponseDto.from(urlMapping, baseUrl))
+                .collect(Collectors.toList());
     }
 
     /**

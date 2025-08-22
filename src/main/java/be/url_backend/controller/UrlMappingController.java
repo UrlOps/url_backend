@@ -1,7 +1,6 @@
 package be.url_backend.controller;
 
 import be.url_backend.common.ResponseText;
-import be.url_backend.domain.UrlMapping;
 import be.url_backend.dto.request.UrlCreateRequestDto;
 import be.url_backend.dto.response.UrlResponseDto;
 import be.url_backend.dto.common.ApiResponse;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,11 +50,8 @@ public class UrlMappingController {
      */
     @GetMapping("/api/urls")
     public ResponseEntity<ApiResponse<List<UrlResponseDto>>> getAllUrls(HttpServletRequest httpServletRequest) {
-        List<UrlMapping> urlMappings = urlMappingService.getAllUrls();
         String baseUrl = getBaseUrl(httpServletRequest);
-        List<UrlResponseDto> responses = urlMappings.stream()
-                .map(urlMapping -> UrlResponseDto.from(urlMapping, baseUrl))
-                .collect(Collectors.toList());
+        List<UrlResponseDto> responses = urlMappingService.getAllUrls(baseUrl);
         ApiResponse<List<UrlResponseDto>> response = ApiResponse.<List<UrlResponseDto>>builder()
                 .msg(ResponseText.URL_LIST_FETCH_SUCCESS.getMsg())
                 .statuscode(String.valueOf(HttpStatus.OK.value()))
