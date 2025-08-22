@@ -1,13 +1,17 @@
 package be.url_backend.dto.response;
 
 import be.url_backend.domain.ClickLog;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClickLogResponseDto {
     private Long id;
     private String userAgent;

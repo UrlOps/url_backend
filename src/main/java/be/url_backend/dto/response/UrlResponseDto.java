@@ -15,7 +15,7 @@ public class UrlResponseDto {
     private final Long id;
     private final String shortKey;
     private final String originalUrl;
-    private final String shortenUrl;
+    private String shortenUrl;
     private final LocalDateTime createdAt;
     private final LocalDateTime expireAt;
 
@@ -29,4 +29,8 @@ public class UrlResponseDto {
                 .expireAt(urlMapping.getExpireAt())
                 .build();
     }
-} 
+
+    public void setShortenUrl(String shortenUrl) {
+        this.shortenUrl = shortenUrl;
+    }
+}
