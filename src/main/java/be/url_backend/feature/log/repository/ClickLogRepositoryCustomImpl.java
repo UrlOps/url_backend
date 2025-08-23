@@ -15,8 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static be.url_backend.feature.QClickLog.clickLog;
-import static be.url_backend.feature.QUrlMapping.urlMapping;
+import static be.url_backend.feature.log.QClickLog.clickLog;
+import static be.url_backend.feature.url.QUrlMapping.urlMapping;
 
 @Repository
 @RequiredArgsConstructor

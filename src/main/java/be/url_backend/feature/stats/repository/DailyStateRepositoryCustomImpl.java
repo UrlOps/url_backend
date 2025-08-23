@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import static be.url_backend.feature.QDailyStats.dailyStats;
+import static be.url_backend.feature.stats.QDailyStats.dailyStats;
 
 @Repository
 @RequiredArgsConstructor
