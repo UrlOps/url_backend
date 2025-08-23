@@ -5,7 +5,7 @@
     <cache alias="url-mapping-cache">
         <!-- 키와 값의 타입을 지정합니다. -->
         <key-type>java.lang.String</key-type>
-        <value-type>be.url_backend.domain.UrlMapping</value-type>
+        <value-type>be.url_backend.feature.url.UrlMapping</value-type>
 
         <expiry>
             <!-- Time to Live: 캐시 항목이 생성된 후 10분 동안 유지됩니다. -->
