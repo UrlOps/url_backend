@@ -19,6 +19,14 @@ public class UrlResponseDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime expireAt;
 
+    public UrlResponseDto(Long id, String shortKey, String originalUrl, LocalDateTime createdAt, LocalDateTime expireAt) {
+        this.id = id;
+        this.shortKey = shortKey;
+        this.originalUrl = originalUrl;
+        this.createdAt = createdAt;
+        this.expireAt = expireAt;
+    }
+
     public static UrlResponseDto from(UrlMapping urlMapping, String baseUrl) {
         return UrlResponseDto.builder()
                 .id(urlMapping.getId())
