@@ -72,7 +72,12 @@ be/url_backend/
     └── util/         # 공통 유틸리티
 ```
 
-<br>
+
+<img width="1866" height="1148" alt="image" src="https://github.com/user-attachments/assets/6b54ee04-bc11-47a9-a1a6-cffbe0fac301" />
+
+
+<br><br>
+
 
 ## 주요 화면
 
