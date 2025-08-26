@@ -76,7 +76,14 @@ be/url_backend/
 <img width="1866" height="1148" alt="image" src="https://github.com/user-attachments/assets/6b54ee04-bc11-47a9-a1a6-cffbe0fac301" />
 
 
-<br><br>
+
+## 서비스 아키텍처
+
+
+<img width="1687" height="1137" alt="image" src="https://github.com/user-attachments/assets/0013d877-e2b0-40b8-8fe9-50fe3244900a" />
+
+
+<br>
 
 
 ## 주요 화면
