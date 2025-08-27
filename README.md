@@ -130,7 +130,7 @@ be/url_backend/
 #### **3. 해결 과정 및 기술적 결정**
 
 - **1단계: Ehcache 적용**
-    - 자주 사용되는 단축 URL → 원본 URL 매핑 데이터를 **Ehcache(Local Cache)**에 저장.
+    - 자주 사용되는 단축 URL → 원본 URL 매핑 데이터를 **Ehcache(Local Cache)** 에 저장.
     - API 호출 시 DB를 조회하기 전에 캐시를 우선 확인하여 **Cache Hit 시 DB 접근 차단**.
 - **2단계: 캐시 전략 설계**
     - **LRU** 정책 기반 캐시 만료 전략 적용.
@@ -281,6 +281,7 @@ be/url_backend/
 <img width="2048" height="610" alt="image" src="https://github.com/user-attachments/assets/5846f48d-c987-4dde-b02e-69810bab0dfd" />
 
 <br>
+
 **한 작업을 끝내는 데 필요한 전체 시간**
 <img width="2048" height="1035" alt="image" src="https://github.com/user-attachments/assets/1760975d-0807-4752-af33-af8e88777726" />
 
