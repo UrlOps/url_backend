@@ -1,6 +1,6 @@
 # --- 1. Build Stage ---
-# Gradle과 JDK 17이 설치된 이미지를 빌드 환경으로 사용
-FROM gradle:7.6.2-jdk17 AS builder
+# Gradle과 JDK 21이 설치된 이미지를 빌드 환경으로 사용
+FROM gradle:jdk21 AS builder
 
 # 작업 디렉토리 설정
 WORKDIR /app
