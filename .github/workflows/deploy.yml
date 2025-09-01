@@ -20,9 +20,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Build (Gradle)
+        working-directory: ./url_backend
         run: |
-          chmod +x ./url_backend/gradlew
-          ./url_backend/gradlew clean build -p url_backend
+          chmod +x ./gradlew
+          ./gradlew clean build
 
       - name: Docker login
         uses: docker/login-action@v3
