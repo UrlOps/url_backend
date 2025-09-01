@@ -16,9 +16,26 @@
 - **관리자 대시보드**:
     - 관리자 인증 (JWT 기반)
     - 전체 URL 목록 조회
-    - URL별 클릭 통계 및 상세 로그 확인 (시간, IP 주소, Referer 등)
+    - URL별 클릭 통계 및 상세 로그 확인 (시간, IP 주소, User-Agent, 클릭 횟수 등)
  
 <br>
+
+## 주요 화면
+
+
+### 메인 화면
+
+<img width="2832" height="1394" alt="image" src="https://github.com/user-attachments/assets/adfc0574-c17c-43e2-a1ea-71b1c37a76d1" />
+<br><br>
+
+### 관리자 로그인 화면
+<img width="2820" height="1386" alt="image" src="https://github.com/user-attachments/assets/540d0dc2-e8fa-43f6-b045-ecd0c6e288e6" />
+<br><br>
+
+### 백오피스 화면
+<img width="2876" height="1404" alt="image" src="https://github.com/user-attachments/assets/1e330cad-6167-4cdc-b977-e1ef59d28e77" />
+
+<br><br>
 
 ## 기술 스택
 
@@ -34,7 +51,6 @@
     - **Caching**: Spring Cache (Ehcache)
     - **기타**: Lombok
  
-<br>
 
 ### Frontend (`url_frontend`)
 
@@ -49,8 +65,7 @@
 
  <br>
 
-
-## 🗄️ 백엔드 아키텍처
+## 백엔드 아키텍처
 
 백엔드는 **도메인 중심의 패키지 구조**로 기능별 응집도를 높이고 다른 기능과의 결합도를 낮췄습니다.
 
@@ -72,27 +87,17 @@ be/url_backend/
     └── util/         # 공통 유틸리티
 ```
 
-<br>
 
-## 주요 화면
-
-
-### 메인 화면
-
-<img width="2832" height="1394" alt="image" src="https://github.com/user-attachments/assets/adfc0574-c17c-43e2-a1ea-71b1c37a76d1" />
-<br>
-
-### 관리자 로그인 화면
-<img width="2820" height="1386" alt="image" src="https://github.com/user-attachments/assets/540d0dc2-e8fa-43f6-b045-ecd0c6e288e6" />
-<br>
-
-### 백오피스 화면
-<img width="2876" height="1404" alt="image" src="https://github.com/user-attachments/assets/1e330cad-6167-4cdc-b977-e1ef59d28e77" />
+<img width="1866" height="1148" alt="image" src="https://github.com/user-attachments/assets/6b54ee04-bc11-47a9-a1a6-cffbe0fac301" />
 
 
 <br><br>
 
----
+## 서비스 아키텍처
+
+<img width="1859" height="1054" alt="image" src="https://github.com/user-attachments/assets/b1586b83-5b48-44a8-8b6f-314e01db432a" />
+
+<br><br>
 
 ## 성능 최적화
 
@@ -125,7 +130,7 @@ be/url_backend/
 #### **3. 해결 과정 및 기술적 결정**
 
 - **1단계: Ehcache 적용**
-    - 자주 사용되는 단축 URL → 원본 URL 매핑 데이터를 **Ehcache(Local Cache)**에 저장.
+    - 자주 사용되는 단축 URL → 원본 URL 매핑 데이터를 **Ehcache(Local Cache)** 에 저장.
     - API 호출 시 DB를 조회하기 전에 캐시를 우선 확인하여 **Cache Hit 시 DB 접근 차단**.
 - **2단계: 캐시 전략 설계**
     - **LRU** 정책 기반 캐시 만료 전략 적용.
@@ -144,13 +149,17 @@ be/url_backend/
 | **Mean Test Time (평균 응답 시간)** | 39.84ms | **37.04ms** | **약 7.0% 단축** |
 | **Executed Tests (총 처리 건수)** | 137,858 | **154,194** | **약 11.8% 증가** |
 
+<br>
+
 #### 캐시 적용 전
 <img width="2048" height="628" alt="image" src="https://github.com/user-attachments/assets/103d28bd-034c-497e-9715-cc3b53cf78ad" />
 
+<br>
 
 #### 캐시 적용 후
 <img width="2048" height="614" alt="image" src="https://github.com/user-attachments/assets/b8abf39d-b31d-4508-95c4-c90b95b4c830" />
 
+<br><br>
 
 ### 2. 복합 인덱스
 
@@ -214,13 +223,17 @@ be/url_backend/
 | **Mean Test Time (평균 응답 시간)** | 386.81ms | **5.43ms** | **약 98% 단축** |
 | **Executed Tests (총 처리 건수)** | 2,949 | **192,522** | **약 65배 증가** |
 
+<br>
+
 #### **인덱스 적용 전**
 <img width="2048" height="620" alt="image" src="https://github.com/user-attachments/assets/8f46525c-e5d8-444e-8752-6e1660406bd9" />
 
+<br>
 
 #### **인덱스 적용 후**
 <img width="2048" height="609" alt="image" src="https://github.com/user-attachments/assets/0e04d1de-a9f0-46c9-802b-308f08b96fb7" />
 
+<br><br>
 
 ### 3. 비동기 처리 (@Async)
 
@@ -262,13 +275,17 @@ be/url_backend/
 | **Mean Test Time (평균 응답 시간)** | 7.77ms | **7.10ms** | **약 8.6% 단축** |
 | **Executed Tests (총 처리 건수)** | 133,013 | **148,226** | **약 11.4% 증가** |
 
+<br>
+
 #### **비동기 적용 전**
 <img width="2048" height="610" alt="image" src="https://github.com/user-attachments/assets/5846f48d-c987-4dde-b02e-69810bab0dfd" />
 
+<br>
 
 **한 작업을 끝내는 데 필요한 전체 시간**
 <img width="2048" height="1035" alt="image" src="https://github.com/user-attachments/assets/1760975d-0807-4752-af33-af8e88777726" />
 
+<br>
 
 #### **비동기 적용 후**
 <img width="2048" height="631" alt="image" src="https://github.com/user-attachments/assets/966d54c2-2dda-4312-94eb-24d3d381396a" />
@@ -276,6 +293,7 @@ be/url_backend/
 
 <img width="2048" height="1035" alt="image" src="https://github.com/user-attachments/assets/19bab646-549e-474b-8042-71c698daa56f" />
 
+<br><br>
 
 ### 4. OSIV (Open Session In View)
 
