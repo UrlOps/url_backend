@@ -19,7 +19,7 @@ RUN ./gradlew build -x test
 
 # --- 2. Run Stage ---
 # 실제 실행에는 JRE만 포함된 가벼운 이미지 사용
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
