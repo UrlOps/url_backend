@@ -20,7 +20,6 @@ jobs:
           distribution: 'temurin'
 
       - name: Build (Gradle)
-        working-directory: ./url_backend
         run: |
           chmod +x ./gradlew
           ./gradlew clean build
@@ -35,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./url_backend/Dockerfile
+          file: ./Dockerfile
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:latest
 
