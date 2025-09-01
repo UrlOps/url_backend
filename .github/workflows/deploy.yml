@@ -24,6 +24,11 @@ jobs:
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
+      - name: Check Secrets Availability
+        run: |
+          echo "Is DOCKERHUB_USERNAME set: ${{ secrets.DOCKERHUB_USERNAME != '' }}"
+          echo "Is DOCKERHUB_TOKEN set: ${{ secrets.DOCKERHUB_TOKEN != '' }}"
+
       - name: Docker login
         uses: docker/login-action@v3
         with:
