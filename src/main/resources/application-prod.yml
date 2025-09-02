@@ -7,6 +7,9 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  web:
+    resources:
+      static-locations: classpath:/static/,file:/static/
 
 management:
   endpoints:

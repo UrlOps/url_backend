@@ -54,6 +54,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
+// bootJar 태스크 설정: static 파일을 JAR 안의 올바른 위치로 복사
 bootJar {
     duplicatesStrategy = 'exclude'
     from('src/main/resources/static') {
