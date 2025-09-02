@@ -26,6 +26,9 @@ WORKDIR /app
 # Build Stage에서 생성된 JAR 파일만 복사
 COPY --from=builder /app/build/libs/*.jar /app/application.jar
 
+# GitHub Actions에서 빌드된 프론트엔드 파일을 static 폴더로 복사
+COPY --chown=root:root url_frontend/dist /static
+
 # 애플리케이션 포트 노출
 EXPOSE 8080
 

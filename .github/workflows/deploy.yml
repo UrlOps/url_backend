@@ -24,6 +24,11 @@ jobs:
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
+      - name: Build Frontend
+        run: |
+          npm --prefix url_frontend install
+          npm --prefix url_frontend run build
+
       - name: Docker login
         uses: docker/login-action@v3
         with:
