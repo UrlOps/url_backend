@@ -20,14 +20,16 @@ jobs:
           distribution: 'temurin'
 
       - name: Build (Gradle)
+        working-directory: ./url_backend
         run: |
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
       - name: Build Frontend
+        working-directory: ./url_frontend
         run: |
-          npm --prefix url_frontend install
-          npm --prefix url_frontend run build
+          npm install
+          npm run build
 
       - name: Docker login
         uses: docker/login-action@v3
@@ -39,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: ./url_backend/Dockerfile
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:latest
 
