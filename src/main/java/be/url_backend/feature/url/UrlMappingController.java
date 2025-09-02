@@ -28,7 +28,7 @@ public class UrlMappingController {
     @PostMapping("/api/urls")
     public ResponseEntity<ApiResponse<UrlResponseDto>> createShortUrl(
             @RequestBody UrlCreateRequestDto request, HttpServletRequest httpServletRequest) {
-        UrlResponseDto urlResponseDto = urlMappingService.createShortUrl(request, getBaseUrl(httpServletRequest));
+        UrlResponseDto urlResponseDto = urlMappingService.createShortUrl(request, getBaseUrl(httpServletRequest) + "/r");
         ApiResponse<UrlResponseDto> response = ApiResponse.<UrlResponseDto>builder()
                 .msg(ResponseText.URL_CREATE_SUCCESS.getMsg())
                 .statuscode(String.valueOf(HttpStatus.CREATED.value()))
@@ -45,7 +45,7 @@ public class UrlMappingController {
      * @param request  HTTP 요청 객체 (클릭 로그 기록에 사용)
      * @return 원본 URL로 리디렉션 응답
      */
-    @GetMapping("/{shortKey}")
+    @GetMapping("/r/{shortKey}")
     public ResponseEntity<Void> redirectToOriginalUrl(
             @PathVariable String shortKey, HttpServletRequest request) {
         String originalUrl = urlMappingService.getOriginalUrlAndLogClick(shortKey, request);
