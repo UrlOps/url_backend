@@ -14,9 +14,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("file:/app/static/", "classpath:/static/");
+        // 정적 리소스 처리 - 높은 우선순위로 설정
+        registry.addResourceHandler("/assets/**", "/static/**", "/*.ico", "/*.png", "/*.jpg", "/*.gif")
+                .addResourceLocations("file:/app/static/", "classpath:/static/")
+                .setCachePeriod(3600);
 
+        // SPA를 위한 포워딩 설정 - API가 아닌 모든 요청을 index.html로 포워딩
         registry.addResourceHandler("/**")
                 .addResourceLocations("file:/app/static/", "classpath:/static/")
                 .resourceChain(true)
@@ -24,16 +27,30 @@ public class WebConfig implements WebMvcConfigurer {
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
                         Resource requestedResource = location.createRelative(resourcePath);
-
+                        
+                        // 요청된 파일이 존재하면 그대로 반환
                         if (requestedResource.exists() && requestedResource.isReadable()) {
                             return requestedResource;
                         }
-
-                        if (!resourcePath.startsWith("api/")) {
-                            return new FileSystemResource("/app/static/index.html");
+                        
+                        // API 요청이나 특정 확장자는 처리하지 않음
+                        if (resourcePath.startsWith("api/") || 
+                            resourcePath.startsWith("r/") ||
+                            resourcePath.endsWith(".css") || 
+                            resourcePath.endsWith(".js") || 
+                            resourcePath.endsWith(".png") || 
+                            resourcePath.endsWith(".jpg") || 
+                            resourcePath.endsWith(".gif") || 
+                            resourcePath.endsWith(".ico") ||
+                            resourcePath.endsWith(".woff") ||
+                            resourcePath.endsWith(".woff2") ||
+                            resourcePath.endsWith(".ttf") ||
+                            resourcePath.endsWith(".eot")) {
+                            return null;
                         }
-
-                        return null;
+                        
+                        // Vue 라우트의 경우 index.html을 반환 (SPA 라우팅 지원)
+                        return new FileSystemResource("/app/static/index.html");
                     }
                 });
     }
