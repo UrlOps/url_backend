@@ -55,6 +55,7 @@ dependencies {
 }
 
 processResources {
+	duplicatesStrategy = 'exclude'
 	from('src/main/resources/static') {
 		into 'static'
 	}
