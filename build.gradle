@@ -55,6 +55,7 @@ dependencies {
 }
 
 bootJar {
+    duplicatesStrategy = 'exclude'
     from('src/main/resources/static') {
         into 'BOOT-INF/classes/static'
     }
