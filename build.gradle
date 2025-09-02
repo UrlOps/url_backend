@@ -54,11 +54,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
-processResources {
-	duplicatesStrategy = 'exclude'
-	from('src/main/resources/static') {
-		into 'static'
-	}
+bootJar.dependsOn(tasks.named('copyStaticFiles'))
+
+tasks.register('copyStaticFiles', Copy) {
+    from 'src/main/resources/static'
+    into 'build/resources/main/static'
 }
 
 tasks.named('test') {
