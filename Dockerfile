@@ -5,14 +5,14 @@ FROM gradle:jdk21 AS builder
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# Gradle 관련 파일 먼저 복사하여 종속성 캐싱 활용
-COPY build.gradle settings.gradle gradlew /app/
-COPY gradle /app/gradle
+# Backend 프로젝트 파일들을 복사
+COPY backend/build.gradle backend/settings.gradle backend/gradlew /app/
+COPY backend/gradle /app/gradle
 # 종속성 다운로드 (소스코드 변경 시 이 부분은 재실행되지 않음)
 RUN ./gradlew dependencies
 
 # 소스코드 전체 복사
-COPY src ./src
+COPY backend/src ./src
 
 # 테스트를 제외하고 애플리케이션 빌드
 RUN ./gradlew build -x test
@@ -26,11 +26,13 @@ WORKDIR /app
 # Build Stage에서 생성된 JAR 파일만 복사
 COPY --from=builder /app/build/libs/*.jar /app/application.jar
 
-# GitHub Actions에서 빌드된 프론트엔드 파일을 /static 폴더로 복사
-COPY url_frontend/dist /static
+# GitHub Actions에서 빌드된 프론트엔드 파일을 Spring Boot가 인식할 수 있는 위치로 복사
+# Spring Boot는 /app/BOOT-INF/classes/static 경로를 정적 리소스로 인식
+RUN mkdir -p /app/static
+COPY frontend/dist/* /app/static/
 
 # 애플리케이션 포트 노출
 EXPOSE 8080
 
 # 컨테이너 실행 시 prod 프로파일로 애플리케이션 실행
-ENTRYPOINT ["java", "-jar", "/app/application.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "/app/application.jar", "--spring.profiles.active=prod", "--spring.resources.static-locations=file:/app/static/"]
