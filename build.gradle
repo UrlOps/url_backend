@@ -54,7 +54,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
-bootJar.dependsOn(tasks.named('copyStaticFiles'))
+bootJar.dependsOn(copyStaticFiles)
 
 tasks.register('copyStaticFiles', Copy) {
     from 'src/main/resources/static'
