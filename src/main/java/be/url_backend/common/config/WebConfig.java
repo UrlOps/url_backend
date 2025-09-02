@@ -1,35 +1,40 @@
 package be.url_backend.common.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 
-import jakarta.persistence.EntityManagerFactory;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
 
 @Configuration
-@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final EntityManagerFactory entityManagerFactory;
-
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("file:/app/static/", "classpath:/static/");
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        OpenEntityManagerInViewInterceptor openEntityManagerInViewInterceptor = new OpenEntityManagerInViewInterceptor();
-        openEntityManagerInViewInterceptor.setEntityManagerFactory(entityManagerFactory);
+        registry.addResourceHandler("/**")
+                .addResourceLocations("file:/app/static/", "classpath:/static/")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        Resource requestedResource = location.createRelative(resourcePath);
 
-        registry.addWebRequestInterceptor(openEntityManagerInViewInterceptor)
-                .addPathPatterns("/api/admin/**");
+                        if (requestedResource.exists() && requestedResource.isReadable()) {
+                            return requestedResource;
+                        }
+
+                        if (!resourcePath.startsWith("api/")) {
+                            return new FileSystemResource("/app/static/index.html");
+                        }
+
+                        return null;
+                    }
+                });
     }
 } 
