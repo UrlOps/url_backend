@@ -35,4 +35,4 @@ COPY frontend/dist/* /app/static/
 EXPOSE 8080
 
 # 컨테이너 실행 시 prod 프로파일로 애플리케이션 실행
-ENTRYPOINT ["java", "-jar", "/app/application.jar", "--spring.profiles.active=prod", "--spring.resources.static-locations=file:/app/static/"]
+ENTRYPOINT ["java", "-jar", "/app/application.jar", "--spring.profiles.active=prod"]
